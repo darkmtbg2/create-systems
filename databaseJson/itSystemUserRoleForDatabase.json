@@ -1,0 +1,11 @@
+{
+  "id": "sequentialnumber",
+  "name": "string",
+  "identifier": "url",
+  "description": "text",
+  "it_System_Id": "parentID",
+  "user_only": "bool",
+  "ou_inherit_allowed": "bool",
+  "uuid": "UUID",
+  "delegated_from_cvr": "null"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "sequentialnumber",
+  "name": "string",
+  "identifier": "string",
+  "description": "string",
+  "it_System_Id": "parentUUID",
+  "role_Type": "string",
+  "uuid": "uuid",
+  "user_Roles": "array"
+}

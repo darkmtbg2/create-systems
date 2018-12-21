@@ -1,0 +1,10 @@
+{
+  "id": "sequentialnumber",
+  "name": "string",
+  "identifier": "string",
+  "system_Type": "saml",
+  "notes": "string",
+  "uuid": "uuid",
+  "system_Roles": "array",
+  "paused": "true"
+}
