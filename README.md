@@ -7,7 +7,7 @@ it can be used to create multiple systems.
 
 This program relies on packages from NPM
 
-these packages are [Faker](https://github.com/marak/Faker.js/) and [UUID])(https://github.com/kelektiv/node-uuid)
+these packages are [Faker](https://github.com/marak/Faker.js/) and [UUID](https://github.com/kelektiv/node-uuid)
 
 ## Usage
 
