@@ -7,6 +7,8 @@ it can be used to create multiple systems.
 
 built for Node.js
 
+it relies on the library fs provided from node 
+
 This program relies on packages from NPM
 
 these packages are [Faker](https://github.com/marak/Faker.js/) and [UUID](https://github.com/kelektiv/node-uuid)
