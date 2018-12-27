@@ -107,6 +107,7 @@ exports.createItSystem = function(
         break;
       case "paused":
         toReturn[key] = false;
+        break;
       default:
         toReturn[key] = "TODO";
         break;

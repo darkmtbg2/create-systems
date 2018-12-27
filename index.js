@@ -1,23 +1,20 @@
-//The Required Packages from outside the project
-const fs = require("fs");
-
 const jsonCreator = require("./DatabaseJson/jsonCreatorForDatabase.js");
 const sqlConverter = require("./DatabaseSQL/sqlConverter.js");
 const fileWriter = require("./FileWriter/fileWriter.js");
+const configuration = require("./conf.js");
 
-//console.log(jsonCreator.createMultipleItSystemRoles(15, 2));
-const test = jsonCreator.createMultipleItSystemsRandomized(5, 15, 2, 10, 2, 10);
+const itSystems = jsonCreator.createMultipleItSystemsRandomized(
+  configuration.configuration
+);
 fileWriter.writeFileSync(
   "./out/systems",
   "json",
-  JSON.stringify(test, null, 4)
+  JSON.stringify(itSystems, null, 4)
 );
-//console.log(convertAllToSQL(test));
-//fileWriter.writeFileSync("./out/insertToSql", "sql", convertAllToSQL(test));
 fileWriter.writeFileSync(
   "./out/insertToSqlWithWhere",
   "sql",
-  allConvertWithWhereStatments(test)
+  allConvertWithWhereStatments(itSystems)
 );
 function convertAllToSQL(toConvert) {
   let sqlToReturn = "";
@@ -43,7 +40,6 @@ function convertAllToSQL(toConvert) {
           systemroleID +
           ");" +
           "\n";
-        //console.log(element);
       });
     });
   });
@@ -67,7 +63,6 @@ function allConvertWithWhereStatments(itSystemsArray) {
           itSystemsID,
           '(select id from it_systems where uuid = "' + itSystemsUUID + '")'
         ) + "\n";
-      //let systemroleID = element.id;
       element.user_Roles.forEach(element => {
         let userRoleUuid = element.uuid;
         sqlToReturn +=
@@ -81,7 +76,6 @@ function allConvertWithWhereStatments(itSystemsArray) {
         sqlToReturn += createBindingTable(systemRoleUuid, userRoleUuid) + "\n";
       });
     });
-    //
   });
   console.log(sqlToReturn);
   return sqlToReturn;
@@ -98,7 +92,7 @@ function createBindingTable(systemroleuuid, userRolesuuid) {
   return sqlToReturn;
 }
 
-// //Functions
+//Functions
 function convertObjectToSQLWithWhereStatement(
   tableName,
   objectToConvert,
@@ -113,8 +107,6 @@ function convertObjectToSQLWithWhereStatement(
   let sqlValulesConvert = Object.values(objectToConvert);
   skipID = true;
   for (let i = 0; i < sqlTablesConvert.length; i++) {
-    //let toReturn = "";
-    //console.log(sqlTablesConvert[i] + " ");
     if (skipID == true && sqlTablesConvert[i] == "id") {
     } else if (sqlTablesConvert[i].toLowerCase() == "it_system_id") {
       tableValues += selectStatment;
@@ -129,7 +121,6 @@ function convertObjectToSQLWithWhereStatement(
       tableValues += sqlValulesConvert[i];
       tableNames += sqlTablesConvert[i];
     } else {
-      //console.log(typeof sqlValulesConvert[i]);
     }
     if (skipID == true && sqlTablesConvert[i] == "id") {
     } else if (
@@ -141,7 +132,6 @@ function convertObjectToSQLWithWhereStatement(
       tableValues += ",";
       tableNames += ",";
     }
-    //console.log( sqlValules[i] + '"');
   }
   toReturn += tableNames + ") VALUES (" + tableValues + ");";
   //console.log(toReturn);
