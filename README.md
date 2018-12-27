@@ -33,3 +33,4 @@ you can run the progam by calling Index.js in the root folder of the project.
 1. the program will now create a folder called out in the root folder.
 1. creating a json and sql file within that folder.
 1. with a random amount of systems or static amount based on the configuration
+# create-systems
