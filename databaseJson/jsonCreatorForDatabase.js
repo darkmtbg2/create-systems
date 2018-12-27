@@ -9,41 +9,39 @@ let itSystemRoleNumber = 1;
 let itSystemUserRoleNumber = 1;
 
 exports.createRandomAmountOfItSystems = function(
-  amountOfItsystemsToCreate,
+  amountOfItSystemsToCreate,
   amountOfItSystemRoles,
   amountOfUserRoles
 ) {
-  return this.createMultipleItSystemsRandomized(
-    amountOfItsystemsToCreate,
-    undefined,
+  return this.createMultipleItSystemsRandomized({
+    amountOfItSystemsToCreate,
     amountOfItSystemRoles,
-    undefined,
-    amountOfUserRoles,
-    undefined
-  );
+    amountOfUserRoles
+  });
 };
 
 //const jsonCreator = new jsonCreator({});
-exports.createMultipleItSystemsRandomized = function(
-  amountOfItsystemsToCreate,
-  randomAmountItSystemMax,
+exports.createMultipleItSystemsRandomized = function({
+  amountOfItSystemsToCreate,
+  amountOfItSystemsToCreateMax = 5,
   amountOfItSystemRoles,
-  amountOfItSystemRolesMax,
+  amountOfItSystemRolesMax = 5,
   amountOfUserRoles,
-  amountOfUserRolesMax
-) {
-  if (amountOfItsystemsToCreate == undefined) {
-    amountOfItsystemsToCreate = 5;
+  amountOfUserRolesMax = 5
+}) {
+  if (amountOfItSystemsToCreate === undefined) {
+    amountOfItSystemsToCreate = 5;
   }
-  if (randomAmountItSystemMax != undefined) {
-    amountOfItsystemsToCreate =
-      amountOfItsystemsToCreate +
+  if (amountOfItSystemsToCreateMax !== undefined) {
+    amountOfItSystemsToCreate =
+      amountOfItSystemsToCreate +
       Math.floor(
-        Math.random() * (randomAmountItSystemMax - amountOfItsystemsToCreate)
+        Math.random() *
+          (amountOfItSystemsToCreateMax - amountOfItSystemsToCreate)
       );
   }
   const itSystemsList = { itSystems: new Array() };
-  for (let i = 0; i < amountOfItsystemsToCreate; i++) {
+  for (let i = 0; i < amountOfItSystemsToCreate; i++) {
     itSystemsList.itSystems[i] = this.createItSystem(
       amountOfItSystemRoles,
       amountOfItSystemRolesMax,
@@ -63,11 +61,11 @@ exports.createItSystem = function(
 ) {
   let toReturn = { ...itSystemForDatabase };
   let objectKeys = Object.keys(toReturn);
-  if (amountOfItSystemRoles == undefined) {
+  if (amountOfItSystemRoles === undefined) {
     amountOfItSystemRoles = 5;
   }
   if (
-    amountOfItSystemRolesMax != undefined &&
+    amountOfItSystemRolesMax !== undefined &&
     amountOfItSystemRoles < amountOfItSystemRolesMax
   ) {
     amountOfItSystemRoles =
@@ -78,32 +76,40 @@ exports.createItSystem = function(
   }
 
   objectKeys.forEach(key => {
-    if (key === "id") {
-      toReturn[key] = itSystemNumber;
-      itSystemNumber++;
-    } else if (key === "name") {
-      toReturn[key] = faker.company.companyName();
-    } else if (key === "identifier") {
-      toReturn[key] =
-        "https://test.idconnect.dk:8090/itsystem/" + (itSystemNumber - 1);
-    } else if (key === "system_Type") {
-      toReturn[key] = "SAML";
-    } else if (key === "notes") {
-      toReturn[key] = "Location " + faker.address.city();
-    } else if (key === "uuid") {
-      toReturn[key] = uuid();
-    } else if (key === "system_Roles") {
-      toReturn[key] = this.createMultipleItSystemRoles(
-        itSystemNumber - 1,
-        amountOfItSystemRoles,
-        amountOfUserRoles,
-        amountOfUserRolesMax
-      );
-      //toReturn[key] = "DONE";
-    } else if (key === "paused") {
-      toReturn[key] = false;
-    } else {
-      toReturn[key] = "TODO";
+    switch (key) {
+      case "id":
+        toReturn[key] = itSystemNumber;
+        itSystemNumber++;
+        break;
+      case "name":
+        toReturn[key] = faker.company.companyName();
+        break;
+      case "identifier":
+        toReturn[key] =
+          "https://test.idconnect.dk:8090/itsystem/" + (itSystemNumber - 1);
+        break;
+      case "System_Type":
+        toReturn[key] = "SAML";
+        break;
+      case "notes":
+        toReturn[key] = "Location " + faker.address.city();
+        break;
+      case "uuid":
+        toReturn[key] = uuid();
+        break;
+      case "system_Roles":
+        toReturn[key] = this.createMultipleItSystemRoles(
+          itSystemNumber - 1,
+          amountOfItSystemRoles,
+          amountOfUserRoles,
+          amountOfUserRolesMax
+        );
+        break;
+      case "paused":
+        toReturn[key] = false;
+      default:
+        toReturn[key] = "TODO";
+        break;
     }
   });
   return toReturn;
@@ -133,37 +139,46 @@ exports.createSystemRoles = function(
 ) {
   let toReturn = { ...itSystemRoleForDatabase };
   let objectKeys = Object.keys(toReturn);
-  if (parentSystem == undefined) {
+  if (parentSystem === undefined) {
     parentSystem = 0;
   }
 
   objectKeys.forEach(key => {
-    if (key === "id") {
-      toReturn[key] = itSystemRoleNumber;
-      itSystemRoleNumber++;
-    } else if (key === "name") {
-      toReturn[key] = faker.commerce.department();
-    } else if (key === "identifier") {
-      toReturn[key] =
-        "https://test.idconnect.dk:8090/itsystemrole/" +
-        (itSystemRoleNumber - 1);
-    } else if (key === "description") {
-      toReturn[key] = faker.lorem.word() + " " + faker.lorem.word();
-    } else if (key === "it_System_Id") {
-      toReturn[key] = parentSystem;
-    } else if (key === "role_Type") {
-      toReturn[key] = "BOTH";
-    } else if (key === "uuid") {
-      toReturn[key] = uuid();
-    } else if (key === "user_Roles") {
-      toReturn[key] = this.createMultipleUserRoles(
-        itSystemNumber - 1,
-        amountOfUserRoles,
-        amountOfUserRolesMax
-      );
-      //toReturn[key] = "TODO user_roles";
-    } else {
-      toReturn[key] = "TODO";
+    switch (key) {
+      case "id":
+        toReturn[key] = itSystemRoleNumber;
+        itSystemRoleNumber++;
+        break;
+      case "name":
+        toReturn[key] = faker.commerce.department();
+        break;
+      case "identifier":
+        toReturn[key] =
+          "https://test.idconnect.dk:8090/itsystemrole/" +
+          (itSystemRoleNumber - 1);
+        break;
+      case "description":
+        toReturn[key] = faker.lorem.word() + " " + faker.lorem.word();
+        break;
+      case "it_System_Id":
+        toReturn[key] = parentSystem;
+        break;
+      case "role_Type":
+        toReturn[key] = "BOTH";
+        break;
+      case "uuid":
+        toReturn[key] = uuid();
+        break;
+      case "user_Roles":
+        toReturn[key] = this.createMultipleUserRoles(
+          itSystemNumber - 1,
+          amountOfUserRoles,
+          amountOfUserRolesMax
+        );
+        break;
+      default:
+        toReturn[key] = "TODO";
+        break;
     }
   });
   return toReturn;
@@ -176,11 +191,11 @@ exports.createMultipleUserRoles = function(
 ) {
   const userRoles = new Array();
 
-  if (amountOfUserRoles == undefined) {
+  if (amountOfUserRoles === undefined) {
     amountOfUserRoles = 5;
   }
   if (
-    amountOfUserRolesMax != undefined &&
+    amountOfUserRolesMax !== undefined &&
     amountOfUserRoles < amountOfUserRolesMax
   ) {
     amountOfUserRoles =
@@ -197,33 +212,44 @@ exports.createMultipleUserRoles = function(
 exports.createSystemUserRoles = function(parentSystem) {
   let toReturn = { ...itSystemUserRoleForDatabase };
   let objectKeys = Object.keys(toReturn);
-  if (parentSystem == undefined) {
+  if (parentSystem === undefined) {
     parentSystem = 0;
   }
   objectKeys.forEach(key => {
-    if (key === "id") {
-      toReturn[key] = itSystemUserRoleNumber;
-      itSystemUserRoleNumber++;
-    } else if (key === "name") {
-      toReturn[key] = faker.lorem.word();
-    } else if (key === "identifier") {
-      toReturn[key] =
-        "https://test.idconnect.dk:8090/ituserrole/" +
-        (itSystemUserRoleNumber - 1);
-    } else if (key === "description") {
-      toReturn[key] = faker.lorem.words(4);
-    } else if (key === "it_System_Id") {
-      toReturn[key] = parentSystem;
-    } else if (key === "user_only") {
-      toReturn[key] = true;
-    } else if (key === "ou_inherit_allowed") {
-      toReturn[key] = false;
-    } else if (key === "uuid") {
-      toReturn[key] = uuid();
-    } else if (key === "delegated_from_cvr") {
-      toReturn[key] = "";
-    } else {
-      toReturn[key] = "TODO";
+    switch (key) {
+      case "id":
+        toReturn[key] = itSystemUserRoleNumber;
+        itSystemUserRoleNumber++;
+        break;
+      case "name":
+        toReturn[key] = faker.lorem.word();
+        break;
+      case "identifier":
+        toReturn[key] =
+          "https://test.idconnect.dk:8090/ituserrole/" +
+          (itSystemUserRoleNumber - 1);
+        break;
+      case "description":
+        toReturn[key] = faker.lorem.words(4);
+        break;
+      case "it_System_Id":
+        toReturn[key] = parentSystem;
+        break;
+      case "user_only":
+        toReturn[key] = true;
+        break;
+      case "ou_inherit_allowed":
+        toReturn[key] = false;
+        break;
+      case "uuid":
+        toReturn[key] = uuid();
+        break;
+      case "delegated_from_cvr":
+        toReturn[key] = "";
+        break;
+      default:
+        toReturn[key] = "TODO";
+        break;
     }
   });
   return toReturn;
@@ -231,16 +257,16 @@ exports.createSystemUserRoles = function(parentSystem) {
 
 //Resets Counters
 exports.resetAllCounters = function() {
-  this.resetItSystemCounter();
-  this.resetItSystemRoleCounter();
-  this.resetUserRoleCounter();
+  resetItSystemCounter();
+  resetItSystemRoleCounter();
+  resetUserRoleCounter();
 };
-exports.resetItSystemCounter = function() {
+resetItSystemCounter = function() {
   this.itSystemNumber = 1;
 };
-exports.resetItSystemRoleCounter = function() {
+resetItSystemRoleCounter = function() {
   this.itSystemRoleNumber = 1;
 };
-exports.resetUserRoleCounter = function() {
+resetUserRoleCounter = function() {
   this.itSystemUserRoleNumber = 1;
 };
